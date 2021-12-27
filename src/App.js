@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
-import { GithubProvider } from "./context/github/GitHubContext"
+import { GithubProvider } from "./context/github/GithubContext"
 import Home from "./pages/Home"
 import About from "./pages/About"
 import NotFound from "./pages/NotFound"
