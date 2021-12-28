@@ -8,7 +8,11 @@ const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN
 
 export const GithubProvider = ({ children }) => {
 	const initialState = {
+		//state for users returned from search result
 		users: [],
+		//state for an indivdual user when following UserProfile route
+		user: {},
+		//state for if page loading or not
 		loading: false,
 	}
 
@@ -58,7 +62,32 @@ export const GithubProvider = ({ children }) => {
 		})
 	}
 
-	//clear users from state
+	// Get specifc user when 'View Profile' clicked
+	const fetchUser = async (login) => {
+		setLoading()
+
+		const res = await fetch(`${GITHUB_URL}/users/${login}`, {
+			headers: {
+				Authorization: `token ${GITHUB_TOKEN}`,
+			},
+		})
+
+		if (res.status === 404) {
+			//redirect if no matching user exists
+			window.location = "/notfound"
+		} else {
+			//destructure to get items array from data returned
+			const data = await res.json()
+
+			// dispatch the action type and payload to the declared reducer above - githubReducer
+			dispatch({
+				type: "GET_USER",
+				payload: data,
+			})
+		}
+	}
+
+	//clear users returned from search result state
 	const clearSearchedUsers = () =>
 		dispatch({
 			type: "CLEAR_USERS",
@@ -73,8 +102,10 @@ export const GithubProvider = ({ children }) => {
 		<GithubContext.Provider
 			value={{
 				users: state.users,
+				user: state.user,
 				loading: state.loading,
 				fetchSearchedUsers: fetchSearchedUsers,
+				fetchUser: fetchUser,
 				clearSearchedUsers: clearSearchedUsers,
 			}}
 		>

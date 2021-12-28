@@ -4,6 +4,7 @@ import { AlertProvider } from "./context/alert/AlertContext"
 import Home from "./pages/Home"
 import About from "./pages/About"
 import NotFound from "./pages/NotFound"
+import UserProfile from "./pages/UserProfile"
 import Navbar from "./components/layout/Navbar"
 import Footer from "./components/layout/Footer"
 import Alert from "./components/layout/Alert"
@@ -22,6 +23,10 @@ function App() {
 							<Routes>
 								<Route path="/" element={<Home />} />
 								<Route path="/about" element={<About />} />
+								<Route
+									path="/user/:login"
+									element={<UserProfile />}
+								/>
 								<Route
 									path="/notfound"
 									element={<NotFound />}
