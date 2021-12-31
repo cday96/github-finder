@@ -4,15 +4,19 @@ import { useParams } from "react-router-dom"
 import { Link } from "react-router-dom"
 import { FaCodepen, FaStore, FaUserFriends, FaUsers } from "react-icons/fa"
 import Spinner from "../components/layout/Spinner"
+import RepoList from "../components/repos/RepoList"
 import GithubContext from "../context/github/GithubContext"
 
 function UserProfile({}) {
-	const { user, fetchUser, loading } = useContext(GithubContext)
+	const { user, fetchUser, fetchUserRepos, loading, repos } =
+		useContext(GithubContext)
 
 	const params = useParams()
 	//fetch the user based on :login param from the route on page load
 	useEffect(() => {
 		fetchUser(params.login)
+		fetchUserRepos(params.login)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	//destructure needed items from the user prop retrieved from the Github API
@@ -166,6 +170,7 @@ function UserProfile({}) {
 						</div>
 					</div>
 				</div>
+				<RepoList repos={repos} />
 			</div>
 		</div>
 	)
