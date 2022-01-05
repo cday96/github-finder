@@ -6,7 +6,7 @@ import { FaCodepen, FaStore, FaUserFriends, FaUsers } from "react-icons/fa"
 import Spinner from "../components/layout/Spinner"
 import RepoList from "../components/repos/RepoList"
 import GithubContext from "../context/github/GithubContext"
-import { fetchUser, fetchUserRepos } from "../context/github/GithubActions"
+import { fetchUserAndRepos } from "../context/github/GithubActions"
 
 function UserProfile({}) {
 	const { user, loading, repos, dispatch } = useContext(GithubContext)
@@ -17,15 +17,13 @@ function UserProfile({}) {
 		dispatch({ type: "SET_LOADING" })
 
 		const getUserData = async () => {
-			const userData = await fetchUser(params.login)
-			dispatch({ type: "GET_USER", payload: userData })
-
-			const userRepoData = await fetchUserRepos(params.login)
-			dispatch({ type: "GET_REPOS", payload: userRepoData })
+			const userData = await fetchUserAndRepos(params.login)
+			dispatch({ type: "GET_USER_AND_REPOS", payload: userData })
 		}
 
 		getUserData()
-	}, [])
+		//can use dependencies because these are not constantly changing
+	}, [dispatch, params.login])
 
 	//destructure needed items from the user prop retrieved from the Github API
 	const {
