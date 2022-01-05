@@ -6,17 +6,25 @@ import { FaCodepen, FaStore, FaUserFriends, FaUsers } from "react-icons/fa"
 import Spinner from "../components/layout/Spinner"
 import RepoList from "../components/repos/RepoList"
 import GithubContext from "../context/github/GithubContext"
+import { fetchUser, fetchUserRepos } from "../context/github/GithubActions"
 
 function UserProfile({}) {
-	const { user, fetchUser, fetchUserRepos, loading, repos } =
-		useContext(GithubContext)
+	const { user, loading, repos, dispatch } = useContext(GithubContext)
 
 	const params = useParams()
 	//fetch the user based on :login param from the route on page load
 	useEffect(() => {
-		fetchUser(params.login)
-		fetchUserRepos(params.login)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+		dispatch({ type: "SET_LOADING" })
+
+		const getUserData = async () => {
+			const userData = await fetchUser(params.login)
+			dispatch({ type: "GET_USER", payload: userData })
+
+			const userRepoData = await fetchUserRepos(params.login)
+			dispatch({ type: "GET_REPOS", payload: userRepoData })
+		}
+
+		getUserData()
 	}, [])
 
 	//destructure needed items from the user prop retrieved from the Github API
